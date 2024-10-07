@@ -21,7 +21,7 @@ class Hero(db.Model, SerializerMixin):
     hero_powers = db.relationship('HeroPower', back_populates='hero', cascade='all, delete-orphan')
     powers = association_proxy('hero_powers', 'power')
 
-    # Serialization rules
+    # Serialization rules so that we can serialize the related Heroes and Powers
     serialize_rules = ('-hero_powers.hero', '-powers.heroes')
 
     def __repr__(self):
@@ -34,14 +34,14 @@ class Power(db.Model, SerializerMixin):
     name = db.Column(db.String)
     description = db.Column(db.String)
 
-    # Relationship
+    # Relationship to HeroPower
     hero_powers = db.relationship('HeroPower', back_populates='power', cascade='all, delete-orphan')
     heroes = association_proxy('hero_powers', 'hero')
 
-    # Serialization rules
+    # Serialization rules so that we can serialize the related Heroes
     serialize_rules = ('-hero_powers.power', '-heroes.powers')
 
-    # Validation
+    # Validation rules
     @validates('description')
     def validate_description(self, key, description):
         if not description or len(description) < 20:
@@ -57,17 +57,17 @@ class HeroPower(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     strength = db.Column(db.String, nullable=False)
 
-    # Relationships
+    # Relationships to Hero and Power
     hero_id = db.Column(db.Integer, db.ForeignKey('heroes.id'))
     power_id = db.Column(db.Integer, db.ForeignKey('powers.id'))
 
     hero = db.relationship('Hero', back_populates='hero_powers')
     power = db.relationship('Power', back_populates='hero_powers')
 
-    # Serialization rules
+    # Serialization rules so that we can serialize the related Hero and Power
     serialize_rules = ('-hero.hero_powers', '-power.hero_powers')
 
-    # Validation
+    # Validation rules
     @validates('strength')
     def validate_strength(self, key, strength):
         valid_strengths = ['Strong', 'Weak', 'Average']
@@ -75,5 +75,6 @@ class HeroPower(db.Model, SerializerMixin):
             raise ValueError("Strength must be one of: Strong, Weak, Average")
         return strength
 
+    # custom __repr__ method
     def __repr__(self):
         return f'<HeroPower {self.id}>'
