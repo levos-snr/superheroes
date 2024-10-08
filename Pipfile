@@ -13,6 +13,7 @@ ipdb = "*"
 pytest = "*"
 flask-restful = "*"
 sqlalchemy-serializer = "*"
+flask-cors = "*"
 
 [requires]
 python_full_version = "3.12"

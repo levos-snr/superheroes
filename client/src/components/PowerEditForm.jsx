@@ -12,7 +12,7 @@ function PowerEditForm() {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`/powers/${id}`).then((r) => {
+    fetch(`/api/powers/${id}`).then((r) => {
       if (r.ok) {
         r.json().then((power) => {
           setPower({ data: power, errors: [], status: "resolved" });
@@ -30,7 +30,7 @@ function PowerEditForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    fetch(`/powers/${power.id}`, {
+    fetch(`/api/powers/${power.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
